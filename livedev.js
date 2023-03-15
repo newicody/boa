@@ -37,7 +37,7 @@ class auth {
 };
 
 //     this.server_list.forEach(ip => fetch("http://" + ip + "/auth.php", requestOptions).then((res) => res.text().then((res) => {document.write(res)})  ));
-     this.server_list.forEach(ip => fetch("http://" + ip + "/auth.php",requestOptions).then((res) => res.text().then((res) => {document.write(res)})  ));
+     this.server_list.forEach(ip => fetch("http://" + ip + "res/auth.php",requestOptions).then((res) => res.text().then((res) => {document.write(res)})  ));
 
   }
 }

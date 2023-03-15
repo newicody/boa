@@ -17,7 +17,7 @@ if ($argv[0]!=$_POST['dest']){
 include($_POST['dest']);
 }
 else{
-include("/home/newic/boa/errors/404.html");
+include("/home/newic/git/errors/404.html");
 }
 ?>
 
