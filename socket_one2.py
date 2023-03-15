@@ -8,6 +8,14 @@ import threading
 import json
 import ssl
 
+class web_venv:
+    def __init__(self):
+        pass
+
+class interface:
+    def __init__(self):
+        pass
+
 class new_socket:
     def __init__(self,port,path):
         self.hote = '192.168.1.158'
@@ -327,12 +335,28 @@ if __name__ == '__main__':
              except StopIteration as e:
                  print("Missing parameter after -t/--timing")
         if (arg == "-h") or (arg == "--help"):
-             print("Utilisation : python3 socket_one.py [OPTION]")
-             print("B.O.A est un serveur web écrit grâce à Python.\r")
+             print("Merci de tester/utiliser mon serveur web.\n\n"
+"Il n'est qu\'au début de son dévelopement. Il ne fonctionne"
+"pour le moment qu\'en standalone et permet de :\n - lister le"
+"contenu d\'un répertoire\n - afficher des pages html et php\n\n ")
+
+             print("Utilisation : python3 socket_one2.py [OPTION]")
+             print("(B.O.A est un serveur web écrit grâce à Python.\r")
              print("-r, --root         Change defaut path(./)\r")
              print("-p, --port         Change defaut port(8081)\r")
              print("-t, --timing       Change time to wait between each waiting connection(0.05)\r")
+             print("-i, --iface        Select the principal interface (eth0)  and create/usefree virtueliface (eth0:0)\r")
+             print("-l, --log          Choose the log's path and file (/var/log/boa1.log)\r")
+             print("-P, --pool         Communicate with pairs([ip, ip, ip, ip])\r")
+             print("-G, --github       Github repo sync\r")
              print("-h, --help         Print this help\r")
+             print("-I, --INSTALL      (deamon) Modify systemd/openrc/upstart/sysvinit - modify user/venv by conf file\r")
+             print("-U, --THISHIT      Uninstall the worst service\r")   # /!\ will never works
+             print("Exemples")
+             print("Standalone exemple : # python3 socket_one2.py -r /home/user/www/ -p 80 -i eth0 -l /home/user/var/log/ -t 0.05 \r")
+             print("--------------------------------------------existing-path----^                                ^-existing-path---")
+             print("Deamon exemple : # python3 socket_one2.py -I -r /home/user/mynewvenv/ -p 80 -l /home/user/var/log/ -t 0.05 \r")
+             print("-------------------------------------creating venv here--------^ in case of error you need to edit manually conf")
 
 #todo
              print
