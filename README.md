@@ -1,4 +1,4 @@
-<rawtext>
+<pre>
 Dependencies
                  \ (co)-Authors
 \ Python3 ()     |-
@@ -26,4 +26,4 @@ GPL
 
 Contact
 ericlamaze@mail.fr
-<rawtext>
+<pre>
