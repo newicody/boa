@@ -8,11 +8,31 @@ import threading
 import json
 import ssl
 
+class standalone:
+    def __init__(self):
+        pass
+
 class web_venv:
     def __init__(self):
         pass
 
 class interface:
+    def __init__(self):
+        pass
+
+class log:
+    def __init__(self):
+        pass
+
+class config:
+    def __init__(self):
+        pass
+    def install(self):
+        pass
+    def uninstall(self):
+        pass
+
+class pool:
     def __init__(self):
         pass
 
