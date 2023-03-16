@@ -8,7 +8,7 @@ import threading
 import json
 import ssl
 
-class standalone:
+class sidewinder:
     def __init__(self):
         pass
 
@@ -16,7 +16,7 @@ class web_venv:
     def __init__(self):
         pass
 
-class interface:
+class network:
     def __init__(self):
         pass
 
@@ -325,7 +325,7 @@ def main():
 # yaml mime type
 # options d'éxecution :
 # error file report
-
+# handler kill signal process (objet/function)
 
 if __name__ == '__main__':
 
@@ -364,8 +364,11 @@ if __name__ == '__main__':
              print("(B.O.A est un serveur web écrit grâce à Python.\r")
              print("-r, --root         Change defaut path(./)\r")
              print("-p, --port         Change defaut port(8081)\r")
+             print("-s, --ssl          use https\r")
              print("-t, --timing       Change time to wait between each waiting connection(0.05)\r")
              print("-i, --iface        Select the principal interface (eth0)  and create/usefree virtueliface (eth0:0)\r")
+             print("-d, --dhcp         Dhcp request \r")
+             print("-a, --ip           \r")
              print("-l, --log          Choose the log's path and file (/var/log/boa1.log)\r")
              print("-P, --pool         Communicate with pairs([ip, ip, ip, ip])\r")
              print("-G, --github       Github repo sync\r")
@@ -379,7 +382,6 @@ if __name__ == '__main__':
              print("-------------------------------------creating venv here--------^ in case of error you need to edit manually conf")
 
 #todo
-             print
 
 
              quit()
