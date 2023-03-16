@@ -7,10 +7,50 @@ import os
 import threading
 import json
 import ssl
+import multiprocessing
+import subprocess
+#import tqdm #future
+
 
 class sidewinder:
-    def __init__(self):
-        pass
+    def __init__(self,port_value,path_value,timetowait):
+        self.port_value = port_value
+        self.path_value = path_value
+        self.timetowait = timetowait
+
+    def fire(self):
+        root = new_socket(self.port_value,self.path_value)
+        chield = []
+        send = []
+        while True:
+            root.read_chield(self.timetowait)
+            root.connect()
+            root.processing()
+            if( root.clienttoread != []):
+                for elt in root.clienttoread:
+                    chield.append(socket_chield(elt,root.path))
+                    chield[-1].recept()
+                    chield[-1].valid_path()
+                    chield[-1].valid_file()
+                    chield[-1].path_accesible()
+                    if chield[-1].file == None:
+                        chield[-1].add_defaut_index() #if not given: looking for
+                    chield[-1].file_accesible()
+                    chield[-1].mime_detect()
+                    if chield[-1].php == True:
+                        chield[-1].php_args()
+                        chield[-1].mime_php()
+                    else:
+                        chield[-1].mime_text()
+                    chield[-1].create_header()
+                    chield[-1].create_final_io()
+                    send.append( threading.Thread(target=chield[-1].response))
+                    send[-1].start()
+            x=0
+            for elt in send:
+                if elt.is_alive() == False:
+                    root.list_clients[x].close()
+                x+=1
 
 class web_venv:
     def __init__(self):
@@ -25,11 +65,35 @@ class log:
         pass
 
 class config:
-    def __init__(self):
+    def __init__(self,name,init,root,port,interface,ssl,timing,dhcp,log,macaddress,pool,github,init,ip,conf="./conf/boa.conf"):
+        self.name = name
+        self.init = init
+        self.root = root
+        self.port = port
+        self.interface = interface
+        self.ssl = ssl
+        self.timing = timing
+        self.dhcp = dhcp
+        self.log = log
+        self.macaddress = macaddress
+        self.pool = pool
+        self.github = github
+        self.init = init
+        self.ip = ip
+        self.conf = conf
+
+    def writeconf(self)
+        self.file = open(self.conf)
+        content = self.file.read()
+        self.file.close()
+        for elt in self.file:
+            print(elt)
+
+    def writeinit(self):
         pass
-    def install(self):
+    def uninstallconf(self):
         pass
-    def uninstall(self):
+    def uninstallinit(self):
         pass
 
 class pool:
@@ -215,7 +279,7 @@ class socket_chield:
         #self.getphparg = self.phparg
         self.postphparg = ""
         if self.listing == None and self.msg.split("\n")[-1] != "":
-            self.postphparg = " dest " + self.filepath + self.file
+            self.postphparg = " dest " + self.filepath + '/' + self.file
             for elt,elt2 in json.loads(self.msg.split("\n")[-1]).items():
                 self.postphparg +=  " " + elt + " " + elt2
         elif (self.listing == None):
@@ -263,39 +327,7 @@ class socket_chield:
 #        root.list_clients[x] = "transfered"
 
 def main():
-    root = new_socket(port_value,path_value)
-    chield = []
-    send = []
-    while True:
-        root.read_chield(timetowait)
-        root.connect()
-        root.processing()
-        if( root.clienttoread != []):
-            for elt in root.clienttoread:
-                chield.append(socket_chield(elt,root.path))
-                chield[-1].recept()
-                chield[-1].valid_path()
-                chield[-1].valid_file()
-                chield[-1].path_accesible()
-                if chield[-1].file == None:
-                    chield[-1].add_defaut_index() #if not given: looking for
-                chield[-1].file_accesible()
-                chield[-1].mime_detect()
-                if chield[-1].php == True:
-                    chield[-1].php_args()
-                    chield[-1].mime_php()
-                else:
-                    chield[-1].mime_text()
-                chield[-1].create_header()
-                chield[-1].create_final_io()
-                send.append( threading.Thread(target=chield[-1].response))
-                send[-1].start()
-        x=0
-        for elt in send:
-            if elt.is_alive() == False:
-                root.list_clients[x].close()
-            x+=1
-            #root.clienttoread = []
+    pass            #root.clienttoread = []
 
   #      elif root.valid>0 :
   #          pass
@@ -332,6 +364,9 @@ if __name__ == '__main__':
     port_value = 8081
     path_value = "./"
 
+    name=ssl=port=venv_path=interface=dhcp=ip=log=pool=macaddress=github=False
+    conf = "/home/newic/git/config/boa.conf"
+
     timetowait = 0.05 # seconds:
 
     options = iter(sys.argv)
@@ -354,6 +389,56 @@ if __name__ == '__main__':
                  timetowait = next(options)
              except StopIteration as e:
                  print("Missing parameter after -t/--timing")
+        if (arg == "-s") or (arg == "--ssl"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -s/--ssl")
+        if (arg == "-i") or (arg == "--iface"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -i/--iface")
+        if (arg == "-d") or (arg == "--dhcp"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -d/--dhcp")
+        if (arg == "-a") or (arg == "--ip"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -a/--ip")
+        if (arg == "-l") or (arg == "--log"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -l/--log")
+        if (arg == "-G") or (arg == "--github"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -G/--github")
+        if (arg == "-P") or (arg == "--pool"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -P/--pool")
+        if (arg == "-U") or (arg == "--THISHIT"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -U/--THISHIT")
+        if (arg == "-n") or (arg == "--name"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -n/--name")
+        if (arg == "-m") or (arg == "--macaddress"):
+             try:
+                 timetowait = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -m/--macaddress")
         if (arg == "-h") or (arg == "--help"):
              print("Merci de tester/utiliser mon serveur web.\n\n"
 "Il n'est qu\'au début de son dévelopement. Il ne fonctionne"
@@ -373,16 +458,16 @@ if __name__ == '__main__':
              print("-P, --pool         Communicate with pairs([ip, ip, ip, ip])\r")
              print("-G, --github       Github repo sync\r")
              print("-h, --help         Print this help\r")
+             print("-S, --init            \r")
              print("-I, --INSTALL      (deamon) Modify systemd/openrc/upstart/sysvinit - modify user/venv by conf file\r")
              print("-U, --THISHIT      Uninstall the worst service\r")   # /!\ will never works
+             print("-n, --name         \r")   # /!\ will never works
+             print("-m, --macaddress   \r")
              print("Exemples")
              print("Standalone exemple : # python3 socket_one2.py -r /home/user/www/ -p 80 -i eth0 -l /home/user/var/log/ -t 0.05 \r")
              print("--------------------------------------------existing-path----^                                ^-existing-path---")
              print("Deamon exemple : # python3 socket_one2.py -I -r /home/user/mynewvenv/ -p 80 -l /home/user/var/log/ -t 0.05 \r")
              print("-------------------------------------creating venv here--------^ in case of error you need to edit manually conf")
-
-#todo
-
 
              quit()
         try:
@@ -390,5 +475,15 @@ if __name__ == '__main__':
         except StopIteration as e:
             arg = "socket_one.py"
 
-    event = main()
+    if install == True and name != False and root != False and port != False and interface != False and uninstall == False:
+        install = config(name,init,root,port,interface,ssl,timing,dhcp,log,macaddress,pool,github,init,ip,conf)
+        install.writeconf()
+        install.writeinit()
+    elif uninstall == True and install == False and name != False:
+        uninstall = config(name)
+        uninstall.uninstallconf()
+        uninstall.uninstallinit()
+    elif install == False and name != False and root != False and port != False and interface != False:
+        event = sidewinder(port_value,path_value,timetowait)
+        event.fire()
 
