@@ -1,16 +1,20 @@
 from new_socket.new_socket import *
 from socket_chield.socket_chield import *
 import threading
+import asyncio
 
 class sidewinder:
-    def __init__(self,port_value,path_value,timetowait,interface,ip):
+    def __init__(self,port_value,path_value,timetowait,interface,ip,ssl=False,ssl_file=False):
         self.port_value = int(port_value)
         self.path_value = path_value
         self.timetowait = timetowait
         self.interface = interface
         self.ip = ip
+        self.ssl = ssl
+        self.ssl_file = ssl_file
+
     def fire(self):
-        root = new_socket(self.port_value,self.path_value,self.timetowait,self.interface,self.ip)
+        root = new_socket(self.port_value,self.path_value,self.timetowait,self.interface,self.ip,self.ssl,self.ssl_file)
         chield = []
         send = []
         while True:

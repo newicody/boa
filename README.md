@@ -1,4 +1,6 @@
 <pre>
+Current status : EXPERIMENTAL
+
 Dependencies
                  \ (co)-Authors
 \ Python 3.11    |

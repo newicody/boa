@@ -1,17 +1,16 @@
-from options.options import options
-
+from myoptions import myoptions
 class config_parse:
-    def __init__(self,fichier,name=None):
+    def __init__(self,fichier,name):
         
         self.fichier = fichier
 
-        if name != None:
+        if name != False:
             self.name=name
 
         self.op()
 
-        self.options_init = ["init","option"]
-        self.options_server = ["port","venv_path","interface","ssl","timing","dhcp","ip","log","pool","macaddress","github","token"]
+        self.options_init = ["init","boot"]
+        self.options_server = ["port","venv_path","interface","ssl","ssl_file","timing","dhcp","ip","log","pool","macaddress","github","token","user"]
 
         a = self.parse()
         test=[]
@@ -44,7 +43,7 @@ class config_parse:
     def stage2(self,test):
         for elt in test:
             if len(elt) == 1:
-                self.config.append(options(elt))
+                self.config.append(myoptions.myoptions(elt))
             elif len(elt) == 2:
                 if self.config[-1].name == ["init"]:
                     for elt2 in self.options_init:

@@ -2,23 +2,24 @@
 import sys
 import select
 import os
-
 import json
-import ssl
-import multiprocessing
-import subprocess
-import tqdm
+import threading
+import asyncio
 
-from options.config_parse import config_parse
+from myoptions import myoptions
+from myoptions.config_parse import config_parse
+
 from sidewinder.sidewinder import sidewinder
+
+from network import network
 
 if __name__ == '__main__':
 
     port_value = 8081
     path_value = "./"
 
-    conf=path_value=install=uninstall=name=ssl=port_value=venv_path=interface=dhcp=ip=log=pool=macaddress=github=False
-    
+    conf=path_value=install=uninstall=name=ssl=ssl_file=port_value=venv_path=interface=dhcp=ip=log=pool=macaddress=github=user=init=boot=False
+
 
     timetowait = 0.05 # seconds:
 
@@ -27,6 +28,11 @@ if __name__ == '__main__':
     arg = next(options)
 
     while arg!="main.py":
+        if (arg == "-v") or (arg == "--venv_path"):
+             try:
+                 venv_path = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -v/--venv_path")
         if (arg == "-p") or (arg == "--port"):
              try:
                  port_value = int(next(options))
@@ -37,6 +43,11 @@ if __name__ == '__main__':
                  path_value = next(options)
              except StopIteration as e:
                  print("Missing parameter after -r/--root")
+        if (arg == "-u") or (arg == "--user"):
+             try:
+                 user = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -u/--user")
         if (arg == "-t") or (arg == "--timing"):
              try:
                  timetowait = next(options)
@@ -47,6 +58,11 @@ if __name__ == '__main__':
                  ssl = next(options)
              except StopIteration as e:
                  print("Missing parameter after -s/--ssl")
+        if (arg == "-c") or (arg == "--ssl_file"):
+             try:
+                 ssl_file = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -c/--ssl_file")
         if (arg == "-i") or (arg == "--iface"):
              try:
                  interface = next(options)
@@ -77,11 +93,21 @@ if __name__ == '__main__':
                  pool = next(options)
              except StopIteration as e:
                  print("Missing parameter after -P/--pool")
+        if (arg == "-B") or (arg == "--boot"):
+             try:
+                 boot = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -B/--boot")
         if (arg == "-U") or (arg == "--THISHIT"):
              try:
                  uninstall = next(options)
              except StopIteration as e:
                  print("Missing parameter after -U/--THISHIT")
+        if (arg == "-I") or (arg == "--install"):
+             try:
+                 install = next(options)
+             except StopIteration as e:
+                 print("Missing parameter after -I/--install")
         if (arg == "-n") or (arg == "--name"):
              try:
                  name = next(options)
@@ -107,6 +133,7 @@ if __name__ == '__main__':
              print("-v, --venv_path         Change defaut path(./)\r")
              print("-p, --port         Change defaut port(8081)\r")
              print("-s, --ssl          use https\r")
+             print("-c, --sslcert          \r")
              print("-t, --timing       Change time to wait between each waiting connection(0.05)\r")
              print("-i, --iface        Select the principal interface (eth0)  and create/usefree virtueliface (eth0:0)\r")
              print("-d, --dhcp         Dhcp request \r")
@@ -132,11 +159,39 @@ if __name__ == '__main__':
             arg = next(options)
         except StopIteration as e:
             arg = "main.py"
+    if conf != False and install == "True" and name != False and venv_path != False and port_value != False and interface != False and uninstall == False: # install name, add section in config
+        print("Start installation de " + name)
+        configure = config_parse(conf,name)
+        for elt in configure.config:
+            if elt.name == [name]:
+                print("'" + name + "'" + "is in config, choose an another name, aborted installation.")
+                quit()
+            elif elt.name == ["init"]:
+                elt.assign()
+                cfinit = elt
 
-    if install == True and name != False and venv_path != False and port_value != False and interface != False and uninstall == False: # install name, add section in config
-        install = config(name,init,root,port,interface,ssl,timing,dhcp,log,macaddress,pool,github,ip,conf)
-        install.writeconf()
-        install.writeinit()
+
+        cfg=myoptions.myoptions(name,conf,timetowait,venv_path,ssl,ssl_file,port_value,interface,dhcp,ip,log,pool,macaddress,github,init,boot,user)
+        cfg.newpart()
+        print("configuration")
+        cfg.writeconfig()
+        cfg.configvenv() # a modifier : classe
+        cfg.configinitinit(cfinit) # a modifier : classe
+
+        print("Configuration de " + cfg.interface)
+        netcfg = network.network(cfg.interface,cfg.ip,cfg.ssl,cfg.dhcp,cfg.port)
+        print("searching slot")
+        netcfg.search_virtual(cfg.interface)
+        print("slot :" + str(netcfg.slot))
+        print("reconstruction du fichier de config")
+        netcfg.cur_conf = netcfg.readconf()
+        netcfg.new_elt2 = netcfg.modconf()
+        netcfg.writeconf()
+        netcfg.upforever()
+
+#        pool = pool.pool()
+#        log = log.log()
+
     elif uninstall == True and install == False and name != False: # uninstall from name delete section in config
         uninstall = config(name)
         uninstall.uninstallconf()
@@ -146,11 +201,10 @@ if __name__ == '__main__':
         event.fire()
     elif name != False and conf != False: # standalone from conf
         configure = config_parse(conf,name) # configure.options
-        
         for elt in configure.config:
             if elt.name == [name]:
                 elt.assign()
-
+                
 
 #          config = conf.config
 
@@ -169,18 +223,16 @@ if __name__ == '__main__':
 ##        env = web_venv()
 ##        env.path = conf.
 
-                event = sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip)
+                event = sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip,elt.ssl,elt.ssl_file)
                 event.fire()
 
-    elif conf == False and name == False: # launch all servers from conf
-
-        conf = config(name,init,venv_path,port,interface,ssl,timing,dhcp,log,macaddress,pool,github,ip,conf)
-        util = adm_conf(conf)
-        util.read()
-        for elt in util.listeserver:
-            print(elt)
-
-        event = sidewinder(port,venv_path,path_value,timetowait,interface)
-        event.fire()
-
-
+    elif conf != False and name == False: # launch all servers from conf
+        configure = config_parse(conf,name) # configure.options
+        server = []
+        th=[]
+        for elt in configure.config:
+            if elt.name != ["init"]:
+                elt.assign()
+                server.append(sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip,elt.ssl,elt.ssl_file))
+                th.append(threading.Thread(target=server[-1].fire))
+                th[-1].start()
