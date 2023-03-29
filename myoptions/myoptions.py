@@ -80,6 +80,12 @@ class myoptions:
         fichier.write("\n")
         fichier.close()
 
+    def search_venv(self):
+        if os.path.exists(self.venv_path):
+            return True
+        else:
+            return False
+
     def configvenv(self):
         try:
             os.mkdir(self.venv_path)

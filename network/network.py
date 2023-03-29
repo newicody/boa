@@ -63,6 +63,12 @@ class network:
                 continu = False
         yield result
 
+    def search_same_ip(self):
+        for elt in self.search_params():
+            for elt2 in elt:
+                if elt2[1][0] == "address" and elt2[1][1] == self.ip:
+                    return True
+
     def search_virtual(self,ifname,motif="iface"):
         t=[]
         x = len(ifname) + 1

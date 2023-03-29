@@ -175,19 +175,24 @@ if __name__ == '__main__':
         cfg.newpart()
         print("configuration")
         cfg.writeconfig()
-        cfg.configvenv() # a modifier : classe
+        if cfg.search_venv() is not True:
+            print("l'environnement virtuel n'existe pas : création")
+            cfg.configvenv() # a modifier : classe
+        print("configuration de l'init")
         cfg.configinitinit(cfinit) # a modifier : classe
 
         print("Configuration de " + cfg.interface)
         netcfg = network.network(cfg.interface,cfg.ip,cfg.ssl,cfg.dhcp,cfg.port)
-        print("searching slot")
-        netcfg.search_virtual(cfg.interface)
-        print("slot :" + str(netcfg.slot))
-        print("reconstruction du fichier de config")
-        netcfg.cur_conf = netcfg.readconf()
-        netcfg.new_elt2 = netcfg.modconf()
-        netcfg.writeconf()
-        netcfg.upforever()
+        if netcfg.search_same_ip() is not True:
+            print("searching slot")
+            netcfg.search_virtual(cfg.interface)
+            print("slot :" + str(netcfg.slot))
+            print("reconstruction du fichier de config")
+            netcfg.cur_conf = netcfg.readconf()
+            netcfg.new_elt2 = netcfg.modconf()
+            netcfg.writeconf()
+            print("demarrage de l'interface reseau sur " +  cfg.interface+":"+str(netcfg.slot))
+            netcfg.upforever()
 
 #        pool = pool.pool()
 #        log = log.log()
