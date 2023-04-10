@@ -1,6 +1,6 @@
 import os
 import io
-
+import time
 class socket_chield:
     def __init__(self,req,authorized_path):
         self.req = req
@@ -13,7 +13,6 @@ class socket_chield:
         self.listing = None
 
         self.ressources = "res"
-        self.errors = "errors"
 
 
     def recept(self):
@@ -174,7 +173,17 @@ class socket_chield:
         self.send = io.BytesIO( self.finhead + self.f1 )
         self.state = "finalized"
     def response(self):
-        while f := self.send.read():
+        x=0
+        aa = time.time()
+        while f := self.send.read(8):
             self.req.send(f)
+            x+=1
+            if time.time() >= (aa + 1):
+                print(str(x)," octects /sec")
+                if int(x) < 1000000:
+                    pass 
+
+                x=0
+                aa = time.time()
         self.state = "transfered"
         self.close = 1

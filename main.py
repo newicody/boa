@@ -6,6 +6,13 @@ import json
 import threading
 import asyncio
 
+from logg import logg
+from poool import poool
+from errors import errors
+
+
+import multiprocessing
+
 from myoptions import myoptions
 from myoptions.config_parse import config_parse
 
@@ -13,12 +20,15 @@ from sidewinder.sidewinder import sidewinder
 
 from network import network
 
+
+
+
 if __name__ == '__main__':
 
     port_value = 8081
     path_value = "./"
 
-    conf=path_value=install=uninstall=name=ssl=ssl_file=port_value=venv_path=interface=dhcp=ip=log=pool=macaddress=github=user=init=boot=False
+    conf=path_value=install=uninstall=name=ssl=ssl_file=port_value=venv_path=interface=dhcp=ip=log=poopool=github=user=init=boot=False
 
 
     timetowait = 0.05 # seconds:
@@ -68,11 +78,11 @@ if __name__ == '__main__':
                  interface = next(options)
              except StopIteration as e:
                  print("Missing parameter after -i/--iface")
-        if (arg == "-d") or (arg == "--dhcp"):
+        if (arg == "-P") or (arg == "--pool"):
              try:
-                 dhcp = next(options)
+                 poopool = next(options)
              except StopIteration as e:
-                 print("Missing parameter after -d/--dhcp")
+                 print("Missing parameter after -P/--pool")
         if (arg == "-a") or (arg == "--ip"):
              try:
                  ip = next(options)
@@ -88,11 +98,6 @@ if __name__ == '__main__':
                  github = next(options)
              except StopIteration as e:
                  print("Missing parameter after -G/--github")
-        if (arg == "-P") or (arg == "--pool"):
-             try:
-                 pool = next(options)
-             except StopIteration as e:
-                 print("Missing parameter after -P/--pool")
         if (arg == "-B") or (arg == "--boot"):
              try:
                  boot = next(options)
@@ -136,17 +141,14 @@ if __name__ == '__main__':
              print("-c, --sslcert          \r")
              print("-t, --timing       Change time to wait between each waiting connection(0.05)\r")
              print("-i, --iface        Select the principal interface (eth0)  and create/usefree virtueliface (eth0:0)\r")
-             print("-d, --dhcp         Dhcp request \r")
              print("-a, --ip           \r")
              print("-l, --log          Choose the log's path and file (/var/log/boa1.log)\r")
-             print("-P, --pool         Communicate with pairs([ip, ip, ip, ip])\r")
              print("-G, --github       Github repo sync\r")
              print("-h, --help         Print this help\r")
              print("-S, --init            \r")
-             print("-I, --INSTALL      (deamon) Modify systemd/openrc/upstart/sysvinit - modify user/venv by conf file\r")
+             print("-I, --INSTALL      Modify systemd/openrc/upstart/sysvinit to startup a webserver or a coupled client/server service pool - arg : web,pool \r")
              print("-U, --THISHIT      Uninstall the worst service\r")   # /!\ will never works
              print("-n, --name          \r")
-             print("-m, --macaddress    \r")
              print("-R, --runfromconf   Run installed service, with name runing specific server, without name runing all servers (used by init apps) \r")
              print("Exemples")
              print("Standalone exemple : # python3 socket_one2.py -r /home/user/www/ -p 80 -i eth0 -l /home/user/var/log/ -t 0.05 \r")
@@ -159,7 +161,7 @@ if __name__ == '__main__':
             arg = next(options)
         except StopIteration as e:
             arg = "main.py"
-    if conf != False and install == "True" and name != False and venv_path != False and port_value != False and interface != False and uninstall == False: # install name, add section in config
+    if conf != False and install == "web" and name != False and venv_path != False and port_value != False and interface != False and uninstall == False: # install name, add section in config
         print("Start installation de " + name)
         configure = config_parse(conf,name)
         for elt in configure.config:
@@ -170,9 +172,8 @@ if __name__ == '__main__':
                 elt.assign()
                 cfinit = elt
 
-
-        cfg=myoptions.myoptions(name,conf,timetowait,venv_path,ssl,ssl_file,port_value,interface,dhcp,ip,log,pool,macaddress,github,init,boot,user)
-        cfg.newpart()
+        cfg=myoptions.myoptions(name,conf,timetowait,venv_path,ssl,ssl_file,port_value,interface,ip,log,github,init,boot,user,poopool)
+        cfg.localpool_newpart()
         print("configuration")
         cfg.writeconfig()
         if cfg.search_venv() is not True:
@@ -182,7 +183,7 @@ if __name__ == '__main__':
         cfg.configinitinit(cfinit) # a modifier : classe
 
         print("Configuration de " + cfg.interface)
-        netcfg = network.network(cfg.interface,cfg.ip,cfg.ssl,cfg.dhcp,cfg.port)
+        netcfg = network.network(cfg.interface,cfg.ip,cfg.ssl,cfg.port)
         if netcfg.search_same_ip() is not True:
             print("searching slot")
             netcfg.search_virtual(cfg.interface)
@@ -194,42 +195,80 @@ if __name__ == '__main__':
             print("demarrage de l'interface reseau sur " +  cfg.interface+":"+str(netcfg.slot))
             netcfg.upforever()
 
-#        pool = pool.pool()
-#        log = log.log()
+    if conf != False and (install == "wwwpool" or install == "localpool") and name != False and port_value != False and interface != False and uninstall == False and poopool != False: # install name, add section in config
+        print("Start installation de pool pour le server web : " + name)
+        configure = config_parse(conf,name)
+        for elt in configure.config:
+            if elt.name == [name]:
+                print("'" + name + "'" + " server exist, now pool's configuration")
+            elif elt.name == ["init"]:
+                elt.assign()
+                cfinit = elt
+
+        cfg=myoptions.myoptions(name,conf,timetowait,venv_path,ssl,ssl_file,port_value,interface,ip,log,github,init,boot,user,poopool)
+        cfg.wwwpool_newpart()
+        print("configuration")
+        cfg.writeconfigpool()
+        print("configuration de l'init")
+        cfg.configinitinit(cfinit) # a modifier : classe
+
+        print("Configuration de " + cfg.interface)
+        netcfg = network.network(cfg.interface,cfg.ip,cfg.ssl,cfg.port)
+        print(cfg.ip)
+        if netcfg.search_same_ip() is not True:
+            print("searching slot")
+            netcfg.search_virtual(cfg.interface)
+            print("slot :" + str(netcfg.slot))
+            print("reconstruction du fichier de config")
+            netcfg.cur_conf = netcfg.readconf()
+            netcfg.new_elt2 = netcfg.modconf()
+            netcfg.writeconf()
+            print("demarrage de l'interface reseau sur " +  cfg.interface+":"+str(netcfg.slot))
+            netcfg.upforever()
 
     elif uninstall == True and install == False and name != False: # uninstall from name delete section in config
         uninstall = config(name)
         uninstall.uninstallconf()
         uninstall.uninstallinit()
     elif install == False and name == False and venv_path != False and port_value != False and interface != False: # standalone from arg
-        event = sidewinder(port_value,venv_path,timetowait,interface)
-        event.fire()
+        manager = multiprocessing.Manager()
+
+        myerrors = errors.errors(manager)
+        mylog = logg.logg(manager)
+        mypool = poool.poool(manager)
+
+        pool = multiprocessing.Pool()
+
+        reserrors = pool.apply_async(myerrors.mainprocess)
+        reslogs = pool.apply_async(mylog.mainprocess)
+        respool = pool.apply_async(mypool.mainprocess)
+
+        event = sidewinder(port_value,venv_path,timetowait,interface,ip,myerrors,mylog,mypool)
+
+        p = multiprocessing.Process(target=event.fire)
+        p.start()
+
     elif name != False and conf != False: # standalone from conf
         configure = config_parse(conf,name) # configure.options
         for elt in configure.config:
             if elt.name == [name]:
                 elt.assign()
                 
+                manager = multiprocessing.Manager()
 
-#          config = conf.config
+                myerrors = errors.errors(manager)
+                mylog = logg.logg(manager)
+                mypool = poool.poool(manager)
 
-##        net = network()
-##        net.interface = conf.
-##        net.ip = conf.
-##        net.ssl = conf.
-##        net.dhcp = conf.
-##        net.github = conf
-##        net.macaddress = conf.
-##        net.token = conf.
+                pool = multiprocessing.Pool()
 
-##        log = logging()
-##        log.path = conf.
+                reserrors = pool.apply_async(myerrors.mainprocess)
+                reslogs = pool.apply_async(mylog.mainprocess)
+                respool = pool.apply_async(mypool.mainprocess)
 
-##        env = web_venv()
-##        env.path = conf.
-
-                event = sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip,elt.ssl,elt.ssl_file)
-                event.fire()
+                event = sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip,myerrors,mylog,mypool,elt.ssl,elt.ssl_file)
+                p = multiprocessing.Process(target=event.fire)
+                p.start()
 
     elif conf != False and name == False: # launch all servers from conf
         configure = config_parse(conf,name) # configure.options
@@ -238,6 +277,20 @@ if __name__ == '__main__':
         for elt in configure.config:
             if elt.name != ["init"]:
                 elt.assign()
-                server.append(sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip,elt.ssl,elt.ssl_file))
+
+                manager = multiprocessing.Manager()
+
+                myerrors = errors.errors(manager)
+                mylog = logg.logg(manager)
+                mypool = poool.poool(manager)
+
+                pool = multiprocessing.Pool()
+
+                reserrors = pool.apply_async(myerrors.mainprocess)
+                reslogs = pool.apply_async(mylog.mainprocess)
+                respool = pool.apply_async(mypool.mainprocess)
+
+
+                server.append(sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip,myerrors,mylog,mypool,elt.ssl,elt.ssl_file))
                 th.append(threading.Thread(target=server[-1].fire))
                 th[-1].start()

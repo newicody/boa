@@ -10,7 +10,7 @@ class config_parse:
         self.op()
 
         self.options_init = ["init","boot"]
-        self.options_server = ["port","venv_path","interface","ssl","ssl_file","timing","dhcp","ip","log","pool","macaddress","github","token","user"]
+        self.options_server = ["port","venv_path","interface","ssl","ssl_file","timing","ip","log","github","token","user","poopool"]
 
         a = self.parse()
         test=[]
@@ -53,5 +53,3 @@ class config_parse:
                     for elt2 in self.options_server:
                         if elt2 == elt[0]:
                             self.config[-1].opt.append(elt)
-
-

@@ -1,10 +1,10 @@
+import difflib
 from subprocess import run
 class network:
-    def __init__(self,interface,ip,ssl,dhcp,port,config_file="/etc/network/interfaces"):
+    def __init__(self,interface,ip,ssl,port,config_file="/etc/network/interfaces"):
         self.interface = interface
         self.ip = ip
         self.ssl = ssl
-        self.dhcp = dhcp
         self.port = port
 
         self.config_file = config_file
@@ -107,11 +107,24 @@ class network:
 
 
     def writeconf(self):
-        file = open(self.config_file,"w")
+        inf="".join(self.content)
+
+        out = ""
         for elt in self.cur_conf:
-            file.writelines(elt+"\n")
+            out = out + (elt+"\n")
         for elt in self.new_elt2:
-            file.writelines(elt+"\n")
+            out = out + (elt+"\n")
+
+        for line in difflib.unified_diff(inf.split("\n"), out.split("\n"), fromfile="origin "+self.config_file,tofile='new '+self.config_file,n=9999):
+            print(line)
+
+        print("On continue ? (say 'y')")
+        really = input()
+        if really != "y":
+            exit()
+
+        file = open(self.config_file,"w")
+        file.write(out)
         file.close()
 
     def upforever(self):
