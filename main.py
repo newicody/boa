@@ -256,6 +256,7 @@ if __name__ == '__main__':
             p = multiprocessing.Process(target=mypool.extpool_srv,args=(port_value,timetowait,interface,ip,myerrors,mylog,mypool,))
             p.start()
         elif poopool == False:
+            print("starting webserv")
             event = sidewinder(port_value,venv_path,timetowait,interface,ip,peers)
             p = multiprocessing.Process(target=event.fire(myerrors,mylog,mypool))
             p.start()
