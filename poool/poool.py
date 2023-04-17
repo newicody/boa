@@ -15,6 +15,8 @@ class poool:
         while True:
             new_value = self.messages_pool.get()
             self.problems.append(new_value)
+            for elt in self.problems:
+                print(elt)
 
     def localpool_srv(self,port_value,timetowait,interface,ip,myerrors,mylog,mypool,ssll=False,ssl_file=False):
         self.port_value = int(port_value)
