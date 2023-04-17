@@ -57,7 +57,7 @@ class sidewinder:
                     chield[-1].create_final_io()
 
 
-                    send.append(threading.Thread(target=chield[-1].response))
+                    send.append(threading.Thread(target=chield[-1].response(self.msgpool)))
                     send[-1].start()
 
             x=0
