@@ -26,8 +26,6 @@ class poool:
         self.ssl_file = ssl_file
         self.path_value=False
 
-        print("ip:"+self.ip)
-        print("port"+self.port)
 
         self.messages_err = myerrors.messages_err
         self.messages_log = mylog.messages_log
