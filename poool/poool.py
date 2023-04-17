@@ -57,6 +57,8 @@ class poool:
         b = lstarg[1].getsockname()
 
         print(a)
+        print(b)
+        print("lol")
         connectio = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
         connectio.connect(("192.168.1.161",2839))
 
