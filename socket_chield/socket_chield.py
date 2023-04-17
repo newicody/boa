@@ -19,12 +19,9 @@ class socket_chield:
 
         self.ressources = "res"
 
-
         self.msgerr = myerrors.messages_err
         self.msgpool = mypool.messages_pool
         self.msglog = mylog.messages_log
-
-        self.msgpool.put("ttttt")
 
     def recept(self):
         self.msg = self.req.recv(1024).decode("utf-8")

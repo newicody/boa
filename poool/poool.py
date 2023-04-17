@@ -41,6 +41,7 @@ class poool:
             root.connect()
             root.processing()
             if( root.clienttoread != []):
+                print("connection")
                 for elt in root.clienttoread:
                     chield.append(socket_chield(elt,myerrors,mylog,mypool,root.path))
                     chield[-1].recept2()

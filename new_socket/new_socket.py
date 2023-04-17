@@ -11,7 +11,6 @@ class new_socket:
         self.ssll = ssll
         self.ssl_file = ssl_file
 
-        
         self.connection = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
         self.connection.bind((self.hote,self.port))
         self.connection.listen(10)
