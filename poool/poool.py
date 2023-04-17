@@ -59,7 +59,7 @@ class poool:
 
         print(a)
         connectio = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
-        connectio.connect(("192.168.1.160",2839))
+        connectio.connect(("192.168.1.161",2839))
 
         connectio.send(pickle.dumps([a,b,lstarg[2],lstarg[3],lstarg[4]]))
 
