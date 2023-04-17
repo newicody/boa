@@ -14,7 +14,6 @@ class poool:
     def mainprocess(self):
         while True:
             new_value = self.messages_pool.get()
-            print("new error")
             self.problems.append(new_value)
 
     def localpool_srv(self,port_value,timetowait,interface,ip,myerrors,mylog,mypool,ssll=False,ssl_file=False):

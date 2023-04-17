@@ -20,7 +20,6 @@ class socket_chield:
         self.ressources = "res"
 
 
-        self.mypool = mypool
         self.msgerr = myerrors.messages_err
         self.msgpool = mypool.messages_pool
         self.msglog = mylog.messages_log
@@ -241,9 +240,8 @@ class socket_chield:
         x=0
         aa = time.time()
 
-        #self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
-        self.mypool.messages_pool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
-        #time.sleep(10)
+        self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
+        #time.sleep(1000)
         print("tr")
          #while f := self.send.read(8):
 
