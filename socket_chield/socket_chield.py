@@ -250,10 +250,10 @@ class socket_chield:
                 #print(str(x)," octects /sec")
                 #if int(x) < 1000000:
                     #print("send erreur"+str(x))
-                    #self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
+         self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
                     #a=self.filepath + '/' + self.file
-                    #self.messages_pool.put(["slow"])
-                    #mypool.messages_pool.put("lol")
+         self.messages_pool.put(["slow"])
+         mypool.messages_pool.put("lol")
 
                     #time.sleep(10000)
                 #x=0
