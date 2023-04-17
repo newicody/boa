@@ -5,7 +5,6 @@ from socket_chield.socket_chield import *
 import threading
 import asyncio
 
-from scapy.all import *
 import pickle
 
 class poool:
@@ -31,7 +30,7 @@ class poool:
         self.messages_err = myerrors.messages_err
         self.messages_log = mylog.messages_log
         self.messages_pool = mypool.messages_pool
-
+        print(self.ip,self.port_value)
         root = new_socket(self.port_value,self.path_value,self.timetowait,self.interface,self.ip,self.ssll,self.ssl_file)
         chield = []
         send = []
