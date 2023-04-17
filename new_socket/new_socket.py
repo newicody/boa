@@ -21,7 +21,10 @@ class new_socket:
             self.sck = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
             self.sck.load_cert_chain(self.ssl_file + '.pem',self.ssl_file + '.key')
 
-        print("Boa serving at port " + str(self.port) + " on " + self.path +" ( hote : " + self.hote + " )")
+        if path != False:
+            print("Boa serving at port " + str(self.port) + " on " + self.path +" ( hote : " + self.hote + " )")
+        else:
+            print("Boa POOL serving at port " + str(self.port) + " ( hote : " + self.hote + " )")
 
         self.waitingtoconnect=0
         self.connected=0

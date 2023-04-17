@@ -10,7 +10,7 @@ class config_parse:
         self.op()
 
         self.options_init = ["init","boot"]
-        self.options_server = ["port","venv_path","interface","ssl","ssl_file","timing","ip","log","github","token","user","poopool"]
+        self.options_server = ["port","venv_path","interface","ssll","ssl_file","timing","ip","log","github","token","user","poopool"]
 
         a = self.parse()
         test=[]

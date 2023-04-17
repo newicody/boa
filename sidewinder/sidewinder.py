@@ -5,36 +5,40 @@ import asyncio
 
 
 class sidewinder:
-    def __init__(self,port_value,path_value,timetowait,interface,ip,myerrors,mylog,mypool,ssl=False,ssl_file=False):
+    def __init__(self,port_value,path_value,timetowait,interface,ip,peers,ssll=False,ssl_file=False):
         self.port_value = int(port_value)
         self.path_value = path_value
         self.timetowait = timetowait
         self.interface = interface
         self.ip = ip
-        self.ssl = ssl
+        self.ssll = ssll
         self.ssl_file = ssl_file
 
-        self.messages_err = myerrors.messages_err
-        self.messages_log = mylog.messages_log
-        self.messages_pool = mypool.messages_pool
+        self.peers = peers
 
-    def fire(self):
-        root = new_socket(self.port_value,self.path_value,self.timetowait,self.interface,self.ip,self.ssl,self.ssl_file)
+
+
+    def fire(self,myerrors,mylog,mypool):
+
+        self.msgerr = myerrors.messages_err
+        self.msgpool = mypool.messages_pool
+        self.msglog = mylog.messages_log
+
+        root = new_socket(self.port_value,self.path_value,self.timetowait,self.interface,self.ip,self.ssll,self.ssl_file)
         chield = []
         send = []
-
-
+        
         while True:
-            #self.messages_err.put("this is an error")
-            #self.messages_log.put("this is a log")
-            #self.messages_pool.put("this is a pool msg")
+            if len(mypool.problems) > 0:
+                 a = mypool.problems.pop(0)
+                 mypool.localpool_clt(a)
 
             root.read_chield(self.timetowait)
             root.connect()
             root.processing()
             if( root.clienttoread != []):
                 for elt in root.clienttoread:
-                    chield.append(socket_chield(elt,root.path))
+                    chield.append(socket_chield(elt,myerrors,mylog,mypool,root.path))
                     chield[-1].recept()
                     chield[-1].valid_path()
                     chield[-1].valid_file()
@@ -51,11 +55,13 @@ class sidewinder:
                     chield[-1].create_header()
                     chield[-1].create_final_io()
 
+
                     send.append(threading.Thread(target=chield[-1].response))
                     send[-1].start()
-                    self.messages_log.put("connection")
+
             x=0
             for elt in send:
                 if elt.is_alive() == False:
                     root.list_clients[x].close()
                 x+=1
+

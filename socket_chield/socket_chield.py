@@ -1,8 +1,13 @@
 import os
 import io
 import time
+import pickle
+import socket
+
+from tcp import tcp
+
 class socket_chield:
-    def __init__(self,req,authorized_path):
+    def __init__(self,req,myerrors,mylog,mypool,authorized_path=False,peers=False):
         self.req = req
         self.state="connected"
         self.close=0
@@ -14,6 +19,9 @@ class socket_chield:
 
         self.ressources = "res"
 
+        self.msgerr = myerrors.messages_err
+        self.msgpool = mypool.messages_pool
+        self.msglog = mylog.messages_log
 
     def recept(self):
         self.msg = self.req.recv(1024).decode("utf-8")
@@ -23,6 +31,61 @@ class socket_chield:
         self.type = self.armor[0] # GET ...
         self.option = self.armor[1] # /xx/xxx/xxx/x.xxx
         #print(self.type)
+
+    def recept2(self):
+        self.datas = pickle.loads(self.req.recv(1024)) #.decode("utf-8"))
+        print("recept datas")
+        #print(self.type)
+
+
+    def response2(self):
+        A = self.datas[1][0]  # spoofed source IP address
+        B = self.datas[0][0] # destination IP address
+        C = self.datas[1][1] # source port
+        D = self.datas[0][1] # destination port
+        print("srcIp "+A)
+        print("destIp "+B)
+        print("srcPort "+str(C))
+        print("destPort "+str(D))
+        print(self.datas)
+
+        dst = '192.168.1.151'
+
+        pak = tcp.TCPPacket('192.168.1.151',int(C),dst,int(D),0b000101001 )
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
+        #s.setsockopt(socket.SOL_SOCKET, 25, str("enp2s0" + '\0').encode('utf-8'))
+
+        s.sendto(pak.build(), (dst, int(D)))
+
+        print("sended" + dst +":"+str(D))
+
+
+        #connectio.(( self.datas[0][0], self.datas[0][1] ))
+
+
+        #connectio.send(b"lol")  #pickle.dumps([a,b,lstarg[2],lstarg[3],lstarg[4]]))
+
+#        x=0
+#        aa = time.time()
+#
+#        while f := self.send.read(8):
+#            self.req.send(f)
+#            x+=1
+#            if time.time() >= (aa + 1):
+#                print(str(x)," octects /sec")filtr
+#                if int(x) < 1000000:
+#                    pass
+
+                    #self.messages_pool.put(["slow",self.req,self.finhead,self.filepath+'/'+self.file,x])
+                    #self.msgmypool.put(["slow",1,2,3,4])
+                    #time.sleep(120)
+#                x=0
+#                aa = time.time()
+#
+#        self.state = "transfered"
+        self.close = 1
+
 
     def valid_path(self):
         if self.option =="/":
@@ -175,15 +238,26 @@ class socket_chield:
     def response(self):
         x=0
         aa = time.time()
-        while f := self.send.read(8):
-            self.req.send(f)
-            x+=1
-            if time.time() >= (aa + 1):
-                print(str(x)," octects /sec")
-                if int(x) < 1000000:
-                    pass 
+        
+        self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
+        time.sleep(10)
+        print("tr")
+         #while f := self.send.read(8):
 
-                x=0
-                aa = time.time()
+            #self.req.send(f)
+            #x+=1
+            #if time.time() >= (aa + 1):
+                #print(str(x)," octects /sec")
+                #if int(x) < 1000000:
+                    #print("send erreur"+str(x))
+                    #self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
+                    #a=self.filepath + '/' + self.file
+                    #self.messages_pool.put(["slow"])
+                    #mypool.messages_pool.put("lol")
+
+                    #time.sleep(10000)
+                #x=0
+                #aa = time.time()
         self.state = "transfered"
         self.close = 1
+        self.req.close()

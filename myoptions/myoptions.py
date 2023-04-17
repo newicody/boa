@@ -3,7 +3,7 @@ import subprocess
 import difflib
 
 class myoptions:
-    def __init__(self,name,conf=False,timing=False,venv_path=False,ssl=False,ssl_file=False,port=False,interface=False,ip=False,log=False,github=False,init=False,boot=False,user=False,poopool=False):
+    def __init__(self,name,conf=False,timing=False,venv_path=False,ssll=False,ssl_file=False,port=False,interface=False,ip=False,log=False,github=False,init=False,boot=False,user=False):
         self.name = name
         self.opt = []
         self.conf=conf
@@ -13,7 +13,7 @@ class myoptions:
         self.user = user
         self.timing=timing
         self.venv_path=venv_path
-        self.ssl=ssl
+        self.ssll=ssll
         self.ssl_file=ssl_file
         self.port=port
         self.interface=interface
@@ -36,8 +36,8 @@ class myoptions:
                 self.port = elt[1]
             if elt[0] == "interface":
                 self.interface = elt[1]
-            if elt[0] == "ssl":
-                self.ssl = elt[1]
+            if elt[0] == "ssll":
+                self.ssll = elt[1]
             if elt[0] == "ssl_file":
                 self.ssl_file = elt[1]
             if elt[0] == "timing":
@@ -55,7 +55,7 @@ class myoptions:
         self.opt.append(["localpool_user",self.user])
         self.opt.append(["localpool_port",self.port])
         self.opt.append(["localpool_interface",self.interface])
-        self.opt.append(["localpool_ssl",self.ssl])
+        self.opt.append(["localpool_ssl",self.ssll])
         self.opt.append(["localpool_ssl_file",self.ssl_file])
         self.opt.append(["localpool_timing",self.timing])
         self.opt.append(["localpool_log",self.log])
@@ -66,7 +66,7 @@ class myoptions:
         self.opt.append(["wwwpool_user",self.user])
         self.opt.append(["wwwpool_port",self.port])
         self.opt.append(["wwwpool_interface",self.interface])
-        self.opt.append(["wwwpool_ssl",self.ssl])
+        self.opt.append(["wwwpool_ssl",self.ssll])
         self.opt.append(["wwwpool_ssl_file",self.ssl_file])
         self.opt.append(["wwwpool_timing",self.timing])
         self.opt.append(["wwwpool_log",self.log])
@@ -79,7 +79,7 @@ class myoptions:
         self.opt.append(["venv_path",self.venv_path])
         self.opt.append(["port",self.port])
         self.opt.append(["interface",self.interface])
-        self.opt.append(["ssl",self.ssl])
+        self.opt.append(["ssll",self.ssll])
         self.opt.append(["ssl_file",self.ssl_file])
         self.opt.append(["timing",self.timing])
         self.opt.append(["log",self.log])
@@ -196,16 +196,16 @@ class myoptions:
             if tpool==False:
                 fle="boa@.service"
             elif tpool=="localpool":
-                fle="boalocalpool.service"
+                fle="boalocalpool@.service"
             elif tpool=="wwwpool":
-                fle="boawebpool.service"
+                fle="boawebpool@.service" 
 
             fichier = open(systemd_path + fle, "w")
             fichier.write("[Unit]\n\
 Description=script description %I \n\
 [Service]\n\
 Type=simple\n\
-ExecStart=python3.11 /home/newic/git/main.py -R /home/newic/git/conf/boa.conf -n %i \n\
+ExecStart=python3.11 /home/newic/git/main.py -R /home/newic/git/conf/boa.conf -n %i -P " + tpool +"\n\
 # Restart=on-failure\n\
 [Install]\n\
 WantedBy=multi-user.target\n\
