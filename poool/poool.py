@@ -26,6 +26,9 @@ class poool:
         self.ssl_file = ssl_file
         self.path_value=False
 
+        print("ip:"+self.ip)
+        print("port"+self.port)
+
         self.messages_err = myerrors.messages_err
         self.messages_log = mylog.messages_log
         self.messages_pool = mypool.messages_pool
@@ -55,8 +58,9 @@ class poool:
         a = lstarg[1].getpeername()
         b = lstarg[1].getsockname()
 
+        print(a)
         connectio = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
-        connectio.connect(("192.168.1.150",2838))
+        connectio.connect(("192.168.1.160",2839))
 
         connectio.send(pickle.dumps([a,b,lstarg[2],lstarg[3],lstarg[4]]))
 

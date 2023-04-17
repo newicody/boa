@@ -248,7 +248,8 @@ if __name__ == '__main__':
         reslogs = pool.apply_async(mylog.mainprocess)
         respool = pool.apply_async(mypool.mainprocess)
 
-        if poopool == "localpool":
+if poopool == "localpool":
+            print("starting localpool")
             p = multiprocessing.Process(target=mypool.localpool_srv,args=(port_value,timetowait,interface,ip,myerrors,mylog,mypool,))
             p.start()
         elif poopool == "webpool":

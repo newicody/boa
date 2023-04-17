@@ -49,9 +49,9 @@ class socket_chield:
         print("destPort "+str(D))
         print(self.datas)
 
-        dst = '192.168.1.151'
+        dst = B
 
-        pak = tcp.TCPPacket('192.168.1.151',int(C),dst,int(D),0b000101001 )
+        pak = tcp.TCPPacket('192.168.1.162',int(C),dst,int(D),0b000101001 )
 
         s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
         #s.setsockopt(socket.SOL_SOCKET, 25, str("enp2s0" + '\0').encode('utf-8'))
@@ -238,7 +238,7 @@ class socket_chield:
     def response(self):
         x=0
         aa = time.time()
-        
+
         self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
         time.sleep(10)
         print("tr")
@@ -260,4 +260,3 @@ class socket_chield:
                 #aa = time.time()
         self.state = "transfered"
         self.close = 1
-        self.req.close()

@@ -27,9 +27,10 @@ class sidewinder:
         root = new_socket(self.port_value,self.path_value,self.timetowait,self.interface,self.ip,self.ssll,self.ssl_file)
         chield = []
         send = []
-        
+
         while True:
             if len(mypool.problems) > 0:
+                 print("anomalie detectée")
                  a = mypool.problems.pop(0)
                  mypool.localpool_clt(a)
 
