@@ -18,6 +18,7 @@ class poool:
             self.problems.append(new_value)
 
     def localpool_srv(self,port_value,timetowait,interface,ip,myerrors,mylog,mypool,ssll=False,ssl_file=False):
+        print("LOCALSERVER")
         self.port_value = int(port_value)
         self.timetowait = timetowait
         self.interface = interface
