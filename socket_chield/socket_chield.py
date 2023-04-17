@@ -252,7 +252,6 @@ class socket_chield:
                     #print("send erreur"+str(x))
         self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
                     #a=self.filepath + '/' + self.file
-        self.messages_pool.put(["slow"])
         mypool.messages_pool.put("lol")
 
                     #time.sleep(10000)
