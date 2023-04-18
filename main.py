@@ -279,6 +279,8 @@ if __name__ == '__main__':
                 reslogs = pool.apply_async(mylog.mainprocess)
                 respool = pool.apply_async(mypool.mainprocess)
                 
+
+
                 event = sidewinder(elt.port,elt.venv_path,elt.timing,elt.interface,elt.ip,myerrors,mylog,mypool,elt.ssll,elt.ssl_file)
                 p = multiprocessing.Process(target=event.fire)
                 p.start()

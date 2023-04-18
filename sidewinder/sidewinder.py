@@ -24,6 +24,7 @@ class sidewinder:
         self.msgpool = mypool.messages_pool
         self.msglog = mylog.messages_log
 
+
         root = new_socket(self.port_value,self.path_value,self.timetowait,self.interface,self.ip,self.ssll,self.ssl_file)
         chield = []
         send = []
@@ -57,7 +58,7 @@ class sidewinder:
                     chield[-1].create_final_io()
 
 
-                    send.append(threading.Thread(target=chield[-1].response(self.msgpool)))
+                    send.append(threading.Thread(target=chield[-1].response()))
                     send[-1].start()
 
             x=0

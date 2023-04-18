@@ -19,9 +19,9 @@ class socket_chield:
 
         self.ressources = "res"
 
-        #self.msgerr = myerrors.messages_err
-        #self.msgpool = mypool.messages_pool
-        #self.msglog = mylog.messages_log
+        self.msgerr = myerrors.messages_err
+        self.msgpool = mypool.messages_pool
+        self.msglog = mylog.messages_log
 
     def recept(self):
         self.msg = self.req.recv(1024).decode("utf-8")
@@ -235,11 +235,11 @@ class socket_chield:
     def create_final_io(self):
         self.send = io.BytesIO( self.finhead + self.f1 )
         self.state = "finalized"
-    def response(self,msgpool):
+    def response(self):
         x=0
         aa = time.time()
 
-        msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
+        self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
         #time.sleep(1000)
         print("tr")
          #while f := self.send.read(8):
