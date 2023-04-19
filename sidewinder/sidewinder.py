@@ -13,8 +13,12 @@ class sidewinder:
         self.ip = ip
         self.ssll = ssll
         self.ssl_file = ssl_file
+         
+        if peers == False:
+            self.peers = [""]
+        else:
+            self.peers = peers.split(",")
 
-        self.peers = peers
 
 
 
@@ -33,7 +37,10 @@ class sidewinder:
             if len(mypool.problems) > 0:
                  print("anomalie detectée")
                  a = mypool.problems.pop(0)
-                 mypool.localpool_clt(a)
+                 if self.peers != [""]:
+                     mypool.localpool_clt(a,self.peers)
+                 else:
+                     print("anomalie ignored")
 
             root.read_chield(self.timetowait)
             root.connect()

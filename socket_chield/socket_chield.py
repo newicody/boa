@@ -240,7 +240,6 @@ class socket_chield:
         aa = time.time()
 
         self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
-        time.sleep(1000)
         print("tr")
          #while f := self.send.read(8):
 

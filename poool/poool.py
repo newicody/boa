@@ -1,4 +1,4 @@
-*import multiprocessing
+import multiprocessing
 
 from new_socket.new_socket import *
 from socket_chield.socket_chield import *
@@ -52,16 +52,21 @@ class poool:
                 x+=1
 
 #    def localpool_clt(self,peer,connection,probleme,dest,head,filepath,pos):
-    def localpool_clt(self,lstarg): #  peer,req,file,head,pos
+    def localpool_clt(self,lstarg,peers): #  peer,req,file,head,pos
         a = lstarg[1].getpeername()
         b = lstarg[1].getsockname()
-
-        connectio = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
-        print("connection from " + b[0] + ":" + b[1] + " to " a[0] + ":" + a[1]
-        connectio.connect((a[0],int(a[1])))
-
-        connectio.send(pickle.dumps([a,b,lstarg[2],lstarg[3],lstarg[4]]))
-
+        for elt in peers:
+            try:
+                connectio = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
+                print("connection from " + b[0] + ":" + str(b[1]) + " to " + a[0] + ":" + str(a[1]))
+                print("becoming from " + elt[0] + ":" + str(elt[1]) + " to " + a[0] + ":" + str(a[1]))
+                print("connecting")
+                connectio.connect((elt[0],int(elt[1])))
+                print("send parameters")
+                connectio.send(pickle.dumps([a,b,lstarg[2],lstarg[3],lstarg[4]]))
+                break
+            except:
+                 continue
         #f = open(file,"rb")
         #f1 = f.seek(pos).read()
         #f.close()
