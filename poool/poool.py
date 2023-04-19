@@ -1,4 +1,4 @@
-import multiprocessing
+*import multiprocessing
 
 from new_socket.new_socket import *
 from socket_chield.socket_chield import *
@@ -15,8 +15,6 @@ class poool:
         while True:
             new_value = self.messages_pool.get()
             self.problems.append(new_value)
-            for elt in self.problems:
-                print(elt)
 
     def localpool_srv(self,port_value,timetowait,interface,ip,myerrors,mylog,mypool,ssll=False,ssl_file=False):
         self.port_value = int(port_value)
@@ -36,12 +34,11 @@ class poool:
         chield = []
         send = []
         while True:
-            print("Wait for error")
             root.read_chield(self.timetowait)
             root.connect()
             root.processing()
             if( root.clienttoread != []):
-                print("connection")
+                print("new client on localpool")
                 for elt in root.clienttoread:
                     chield.append(socket_chield(elt,myerrors,mylog,mypool,root.path))
                     chield[-1].recept2()
@@ -59,11 +56,9 @@ class poool:
         a = lstarg[1].getpeername()
         b = lstarg[1].getsockname()
 
-        print(a)
-        print(b)
-        print("lol")
         connectio = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
-        connectio.connect(("192.168.1.161",2839))
+        print("connection from " + b[0] + ":" + b[1] + " to " a[0] + ":" + a[1]
+        connectio.connect((a[0],int(a[1])))
 
         connectio.send(pickle.dumps([a,b,lstarg[2],lstarg[3],lstarg[4]]))
 

@@ -51,7 +51,7 @@ class socket_chield:
 
         dst = B
 
-        pak = tcp.TCPPacket('192.168.1.162',int(C),dst,int(D),0b000101001 )
+        pak = tcp.TCPPacket(A,int(C),dst,int(D),0b000101001 )
 
         s = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_TCP)
         #s.setsockopt(socket.SOL_SOCKET, 25, str("enp2s0" + '\0').encode('utf-8'))
@@ -240,7 +240,7 @@ class socket_chield:
         aa = time.time()
 
         self.msgpool.put(["slow",self.req,self.filepath+'/'+self.file,self.finhead,x])
-        #time.sleep(1000)
+        time.sleep(1000)
         print("tr")
          #while f := self.send.read(8):
 
