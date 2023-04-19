@@ -59,9 +59,9 @@ class poool:
             try:
                 connectio = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
                 print("connection from " + b[0] + ":" + str(b[1]) + " to " + a[0] + ":" + str(a[1]))
-                print("becoming from " + elt[0] + ":" + str(elt[1]) + " to " + a[0] + ":" + str(a[1]))
+                print("becoming from " + elt.split(":")[0] + ":" + str(elt.split(":")[1]) + " to " + a[0] + ":" + str(a[1]))
                 print("connecting")
-                connectio.connect((elt[0],int(elt[1])))
+                connectio.connect((elt.split(":")[0],int(elt.split(":")[1])))
                 print("send parameters")
                 connectio.send(pickle.dumps([a,b,lstarg[2],lstarg[3],lstarg[4]]))
                 break
